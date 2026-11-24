@@ -45,7 +45,7 @@ identiques, seul le fichier de lancement change (`sim.launch.py` ou `real.launch
 | 3, 4 | 79, 80 | empennage en V gauche, droit |
 | 5 | 33 Motor1 | moteur avant droit (CCW) |
 | 6 | 34 Motor2 | moteur avant gauche (CW) |
-| 8 | 36 Motor4 | moteur arrière (CCW) |
+| 8 | 35 Motor3 | moteur arrière (CCW) |
 | 9, 10 | 75, 76 | basculement nacelle avant gauche, droite |
 | 11 | 45 | basculement moteur arrière |
 | 12 | (à définir) | largage, commandé par la mission (`DO_SET_SERVO`) |

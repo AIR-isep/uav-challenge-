@@ -9,6 +9,7 @@ Liaisons :
   SITL SERIAL1 tcp:5762 -> libre pour MAVProxy : mavproxy.py --master tcp:127.0.0.1:5762
 """
 import os
+import shutil
 from pathlib import Path
 
 from ament_index_python.packages import get_package_share_directory
@@ -58,7 +59,9 @@ def setup(context):
     if perception:
         defaults.append(params / "rangefinder_mavlink.param")
     workdir = Path.home() / ".ros" / "isep_sitl"
-    workdir.mkdir(parents=True, exist_ok=True)
+    (workdir / "scripts").mkdir(parents=True, exist_ok=True)
+    # mixage moteur (Q_FRAME_CLASS 15) : le SITL lit les scripts dans ./scripts
+    shutil.copy(bringup / "ardupilot" / "scripts" / "generated" / "isep_vtol_motors.lua", workdir / "scripts")
     cmd = [str(ap_home / "build/sitl/bin/arduplane"), "--model", "JSON", "--speedup", "1", "--slave", "0",
            "--defaults", ",".join(str(d) for d in defaults), "--sim-address=127.0.0.1", "-I0",
            "--home", ",".join(str(v) for v in HOME)]

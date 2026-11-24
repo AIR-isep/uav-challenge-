@@ -44,6 +44,10 @@ mass:
 propulsion:
   motor: EMAX ECOII-3115 800KV
   prop: 10x6 bipale
+  # Mixage : matrice moteur personnalisée (Q_FRAME_CLASS 15, script Lua généré).
+  # Le mixeur « tri » standard d'ArduPilot suppose un moteur arrière deux fois plus
+  # loin du CG que les avant ; ici il est ~4,7 fois plus loin, d'où le basculement
+  # vers l'avant au décollage avec Q_FRAME_CLASS 7.
   max_rad_s: 1360                 # ~13 000 tr/min en charge sur 6S. ESTIMATION
   max_thrust_n: 26.0              # poussée max par moteur. ESTIMATION, à mesurer au banc
   blade_cp_m: 0.089               # 0,7 x rayon d'une hélice 10"
@@ -74,8 +78,8 @@ propulsion:
       pivot_mm: [0.0, 960.0, 150.0]
       rotor_offset_mm: -50        # moteur suspendu sous le pivot (vers le bas en VTOL)
       spin: ccw
-      motor_servo: 8              # SERVO8 = Motor4 (fonction 36)
-      motor_function: 36
+      motor_servo: 8              # SERVO8 = Motor3 (fonction 35)
+      motor_function: 35
       tilt_servo: 11              # SERVO11 = TiltMotorsRear (fonction 45)
       tilt_function: 45
 

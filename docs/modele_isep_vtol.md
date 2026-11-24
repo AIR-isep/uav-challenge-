@@ -50,7 +50,7 @@ Les positions de `isep_vtol.yaml` se lisent directement dans Fusion (Inspecter >
 
 - Les gouvernes ne sont pas visibles (STL d'un seul bloc). Exporter les ailerons et le V séparément pour les voir bouger.
 - La traînée du plugin `LiftDrag` est proportionnelle à l'incidence, sans traînée de forme : la puissance de croisière simulée est optimiste.
-- `AP_MotorsTri` suppose un tri symétrique ; notre moteur arrière est loin derrière (76 cm contre 16 cm pour l'avant). Le terme intégral compense en stationnaire. Si le réglage s'avère difficile, passer à une matrice de moteurs personnalisée (`Q_FRAME_CLASS 15`, script Lua).
+- Le mixage moteur est une matrice personnalisée (`Q_FRAME_CLASS 15`) générée depuis la géométrie : voir [décision 0002](decisions/0002-tilt-tri.md). Si le CG ou la position des moteurs change, régénérer et recopier le script.
 
 ## Vérification visuelle
 

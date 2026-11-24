@@ -9,3 +9,4 @@
 # Fichiers générés : pas de conflit manuel, on régénère
 ros2_ws/src/isep_description/models/isep_vtol/model.sdf linguist-generated=true
 ardupilot/params/generated/* linguist-generated=true
+ardupilot/scripts/generated/* linguist-generated=true

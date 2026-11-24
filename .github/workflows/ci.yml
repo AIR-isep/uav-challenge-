@@ -19,7 +19,7 @@ jobs:
       - name: Le modèle généré est à jour avec config/isep_vtol.yaml
         run: |
           python3 ros2_ws/src/isep_description/scripts/generate_model.py
-          git diff --exit-code -- ros2_ws/src/isep_description/models ardupilot/params/generated
+          git diff --exit-code -- ros2_ws/src/isep_description/models ardupilot/params/generated ardupilot/scripts/generated
       - name: SDF bien formé
         run: python3 -c "import xml.dom.minidom as m; m.parse('ros2_ws/src/isep_description/models/isep_vtol/model.sdf'); m.parse('ros2_ws/src/isep_description/worlds/isep_runway.sdf')"
       - name: Tests unitaires

@@ -7,7 +7,7 @@ paramètres ArduPilot et logiciel embarqué ROS 2 du drone principal **isep_vtol
 |---|---|
 | Cellule | aile volante à fuselage porteur, 1,60 m d'envergure, empennage en V, 4,3 kg |
 | Propulsion | tilt-tri : 2 nacelles avant basculantes + 1 moteur arrière suspendu, qui bascule vers l'arrière en croisière |
-| Autopilote | ArduPlane 4.7 (QuadPlane, `Q_FRAME_CLASS 7`, lacet vectoriel `Q_TILT_TYPE 2`) |
+| Autopilote | ArduPlane 4.7 (QuadPlane, matrice moteur `Q_FRAME_CLASS 15`, lacet vectoriel `Q_TILT_TYPE 2`) |
 | Ordinateur de bord | Raspberry Pi 5, Ubuntu 24.04, ROS 2 Jazzy, MAVROS |
 | Simulation | Gazebo Harmonic + plugin `ardupilot_gazebo` |
 

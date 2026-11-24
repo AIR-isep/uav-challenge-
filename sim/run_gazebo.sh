@@ -29,8 +29,14 @@ sleep 5
 OUT_ARGS=()
 if [[ -n "${GCS_IP:-}" ]]; then OUT_ARGS+=(--out "udp:${GCS_IP}:14550"); fi
 
+# Dossier de travail du SITL : le script de mixage moteur doit être dans ./scripts
+WORK="$HOME/.isep_sitl"
+mkdir -p "$WORK/scripts"
+cp "$REPO/ardupilot/scripts/generated/isep_vtol_motors.lua" "$WORK/scripts/"
+
 cd "$ARDUPILOT_HOME"
-Tools/autotest/sim_vehicle.py -v ArduPlane -f quadplane --model JSON \
+# -w : on repart toujours des fichiers .param (pas de réglages restés en mémoire)
+Tools/autotest/sim_vehicle.py -v ArduPlane -f quadplane --model JSON -w --use-dir="$WORK" \
   --add-param-file="$P/isep_vtol_gz.param" \
   --add-param-file="$P/generated/isep_vtol_servos.param" \
   --add-param-file="$P/common.param" \

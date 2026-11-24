@@ -386,6 +386,45 @@ def servo_params(cfg, info):
     return "\n".join(lines) + "\n"
 
 
+def motor_matrix_lua(cfg, info):
+    """Script Lua de mixage (Q_FRAME_CLASS 15) calculé depuis la géométrie réelle.
+
+    Facteurs ArduPilot : roulis = +bras vers la gauche, tangage = +bras vers l'avant
+    (même convention que AP_MotorsMatrix::add_motor). Lacet : 0, il est obtenu par le
+    basculement différentiel des nacelles avant (Q_TILT_TYPE 2).
+    Facteurs de gaz : choisis pour qu'une même commande de gaz donne un moment de
+    tangage nul autour du CG (sum tf_i * x_i = 0), le moteur avant valant 1.
+    """
+    fr = info["fr"]
+    motors = []
+    for key, r in cfg["propulsion"]["rotors"].items():
+        x, y, _ = fr.pos(r["pivot_mm"])
+        motors.append((MOTOR_FUNCTION_TO_INDEX[r["motor_function"]] - 1, key, x, y))
+    motors.sort()
+    front = [m for m in motors if m[2] > 0]
+    rear = [m for m in motors if m[2] <= 0]
+    m_front = sum(m[2] for m in front)
+    m_rear = -sum(m[2] for m in rear)
+    tf = {m[0]: 1.0 for m in front}
+    for m in rear:
+        tf[m[0]] = m_front / m_rear / len(rear)
+    lines = [
+        "-- FICHIER GÉNÉRÉ par ros2_ws/src/isep_description/scripts/generate_model.py : ne pas éditer.",
+        "-- Mixage moteur isep_vtol (tilt-tri), à charger avec Q_FRAME_CLASS 15 et SCR_ENABLE 1.",
+        "-- add_motor_raw(index, roulis, tangage, lacet, ordre de test) ; index 0 = Motor1 (fonction 33).",
+    ]
+    for order, (idx, key, x, y) in enumerate(motors, start=1):
+        lines.append(f"MotorsMatrix:add_motor_raw({idx}, {y:.4f}, {x:.4f}, 0.0, {order})  -- {key}")
+    for idx, key, _, _ in motors:
+        lines.append(f"MotorsMatrix:set_throttle_factor({idx}, {tf[idx]:.4f})  -- {key}")
+    lines += [
+        f'assert(MotorsMatrix:init({len(motors)}), "isep_vtol : échec de l\'initialisation de la matrice moteur")',
+        'motors:set_frame_string("isep_vtol tilt-tri")',
+        "",
+    ]
+    return "\n".join(lines)
+
+
 def summary(cfg, info):
     fr = info["fr"]
     weight = cfg["mass"]["total_kg"] * G
@@ -414,6 +453,7 @@ def main(argv=None):
     ap.add_argument("--config", default=str(PKG_DIR / "config" / "isep_vtol.yaml"))
     ap.add_argument("--model-dir", default=str(PKG_DIR / "models" / "isep_vtol"))
     ap.add_argument("--params-out", default=str(REPO_DIR / "ardupilot" / "params" / "generated" / "isep_vtol_servos.param"))
+    ap.add_argument("--lua-out", default=str(REPO_DIR / "ardupilot" / "scripts" / "generated" / "isep_vtol_motors.lua"))
     ap.add_argument("--check", action="store_true", help="génère en mémoire et affiche le résumé, sans écrire")
     args = ap.parse_args(argv)
 
@@ -442,7 +482,10 @@ def main(argv=None):
     p_out = Path(args.params_out)
     p_out.parent.mkdir(parents=True, exist_ok=True)
     p_out.write_text(params, encoding="utf-8")
-    print(f"Écrit : {model_dir / 'model.sdf'}\nÉcrit : {p_out}")
+    lua_out = Path(args.lua_out)
+    lua_out.parent.mkdir(parents=True, exist_ok=True)
+    lua_out.write_text(motor_matrix_lua(cfg, info), encoding="utf-8")
+    print(f"Écrit : {model_dir / 'model.sdf'}\nÉcrit : {p_out}\nÉcrit : {lua_out}")
     return 0
 
 

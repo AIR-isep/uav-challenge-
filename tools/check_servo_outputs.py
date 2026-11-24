@@ -14,7 +14,7 @@ from pathlib import Path
 from pymavlink import mavutil
 
 FUNCTIONS = {4: "aileron", 33: "moteur 1 (avant droit)", 34: "moteur 2 (avant gauche)",
-             36: "moteur 4 (arrière)", 45: "bascule arrière", 75: "bascule avant gauche",
+             35: "moteur 3 (arrière)", 36: "moteur 4", 45: "bascule arrière", 75: "bascule avant gauche",
              76: "bascule avant droite", 79: "V gauche", 80: "V droit", 28: "largage"}
 REPO = Path(__file__).resolve().parents[1]
 

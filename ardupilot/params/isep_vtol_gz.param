@@ -7,7 +7,8 @@
 # =============================================================================
 
 Q_ENABLE         1
-Q_FRAME_CLASS    7       # Tri
+Q_FRAME_CLASS    15      # matrice moteur par script : scripts/generated/isep_vtol_motors.lua
+SCR_ENABLE       1       # nécessaire pour le script de mixage
 Q_TILT_ENABLE    1
 Q_TILT_TYPE      2       # lacet par basculement différentiel des nacelles avant
 Q_TILT_MAX       45      # basculement max autorisé en modes VTOL
@@ -15,8 +16,6 @@ Q_TILT_RATE_UP   40
 Q_TILT_RATE_DN   40
 # Q_TILT_MASK et Q_TILT_YAW_ANGLE : dans generated/isep_vtol_servos.param
 
-# Sorties non utilisées par le tri
-SERVO7_FUNCTION  0
 
 # --- Gains VTOL (départ) ---
 Q_A_RAT_RLL_P    0.126
