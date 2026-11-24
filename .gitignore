@@ -1,0 +1,17 @@
+# colcon
+ros2_ws/build/
+ros2_ws/install/
+ros2_ws/log/
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+# ArduPilot SITL (lancé depuis le dépôt)
+eeprom.bin
+mav.parm
+mav.tlog*
+logs/
+terrain/
+# divers
+.vscode/
+*.swp

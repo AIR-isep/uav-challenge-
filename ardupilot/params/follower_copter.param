@@ -1,0 +1,15 @@
+# =============================================================================
+# Second drone (ArduCopter, quad 3,5") : suit le drone principal en mode FOLLOW.
+# Scénario 07 : distance 5 ± 2 m pendant 3 min.
+# Lancement SITL : sim_vehicle.py -v ArduCopter -f quad -I1 --sysid 2 \
+#                  --add-param-file=ardupilot/params/follower_copter.param
+# =============================================================================
+SYSID_THISMAV    2
+FOLL_ENABLE      1
+FOLL_SYSID       1       # suit le véhicule 1 (drone principal)
+FOLL_OFS_TYPE    1       # décalage relatif au cap du maître
+FOLL_OFS_X       -5      # 5 m derrière
+FOLL_OFS_Y       0
+FOLL_OFS_Z       -3      # 3 m au-dessus (repère NED)
+FOLL_DIST_MAX    100
+FOLL_YAW_BEHAVE  2       # garde le même cap que le maître

@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<!--
+  Monde de test du drone isep_vtol : piste ArduPilot + capteurs rendus.
+  Dépend des modèles du plugin ardupilot_gazebo (model://runway) :
+  GZ_SIM_RESOURCE_PATH doit contenir ~/ardupilot_gazebo/models.
+-->
+<sdf version="1.9">
+  <world name="isep_runway">
+    <physics name="1ms" type="ignore">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+    </physics>
+
+    <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics"/>
+    <plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands"/>
+    <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster"/>
+    <plugin filename="gz-sim-imu-system" name="gz::sim::systems::Imu"/>
+    <plugin filename="gz-sim-navsat-system" name="gz::sim::systems::NavSat"/>
+    <!-- Caméra et LiDAR simulés : rendu par la carte graphique -->
+    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+
+    <scene>
+      <ambient>1.0 1.0 1.0</ambient>
+      <background>0.8 0.8 0.8</background>
+      <sky></sky>
+    </scene>
+
+    <!-- Même position de départ que le SITL par défaut (terrain CMAC, Australie).
+         À remplacer par les coordonnées du terrain du challenge. -->
+    <spherical_coordinates>
+      <latitude_deg>-35.363262</latitude_deg>
+      <longitude_deg>149.165237</longitude_deg>
+      <elevation>584</elevation>
+      <heading_deg>0</heading_deg>
+      <surface_model>EARTH_WGS84</surface_model>
+    </spherical_coordinates>
+
+    <light type="directional" name="sun">
+      <cast_shadows>true</cast_shadows>
+      <pose>0 0 10 0 0 0</pose>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.8 0.8 0.8 1</specular>
+      <direction>-0.5 0.1 -0.9</direction>
+    </light>
+
+    <include>
+      <uri>model://runway</uri>
+      <pose degrees="true">-29 545 0 0 0 363</pose>
+    </include>
+
+    <!-- Cible au sol pour la détection (carré rouge 1 m) -->
+    <model name="target_marker">
+      <static>true</static>
+      <pose>30 0 0.01 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><box><size>1 1 0.01</size></box></geometry>
+          <material>
+            <ambient>0.9 0.05 0.05 1</ambient>
+            <diffuse>0.9 0.05 0.05 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <include>
+      <uri>model://isep_vtol</uri>
+      <pose>0 0 0.16 0 0 0</pose>
+    </include>
+  </world>
+</sdf>

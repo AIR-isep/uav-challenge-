@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>isep_bringup</name>
+  <version>0.1.0</version>
+  <description>Fichiers de lancement : simulation (Gazebo + SITL + MAVROS) et vol réel.</description>
+  <maintainer email="equipe-air@isep.fr">Équipe AIR ISEP</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <exec_depend>launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
+  <exec_depend>mavros</exec_depend>
+  <exec_depend>mavros_extras</exec_depend>
+  <exec_depend>ros_gz_sim</exec_depend>
+  <exec_depend>ros_gz_bridge</exec_depend>
+  <exec_depend>isep_description</exec_depend>
+  <exec_depend>isep_mission</exec_depend>
+  <exec_depend>isep_perception</exec_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

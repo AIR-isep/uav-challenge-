@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  # Rapide, sans ROS : générateur de modèle, machine à états, missions, détecteur
+  python:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pyyaml pytest numpy opencv-python-headless
+      - name: Le modèle généré est à jour avec config/isep_vtol.yaml
+        run: |
+          python3 ros2_ws/src/isep_description/scripts/generate_model.py
+          git diff --exit-code -- ros2_ws/src/isep_description/models ardupilot/params/generated
+      - name: SDF bien formé
+        run: python3 -c "import xml.dom.minidom as m; m.parse('ros2_ws/src/isep_description/models/isep_vtol/model.sdf'); m.parse('ros2_ws/src/isep_description/worlds/isep_runway.sdf')"
+      - name: Tests unitaires
+        run: |
+          PYTHONPATH=ros2_ws/src/isep_mission pytest -q ros2_ws/src/isep_mission/test
+          PYTHONPATH=ros2_ws/src/isep_perception pytest -q ros2_ws/src/isep_perception/test
+
+  # Compilation complète des paquets ROS 2 Jazzy
+  colcon:
+    runs-on: ubuntu-24.04
+    container: ros:jazzy
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dépendances
+        run: |
+          apt-get update
+          rosdep update
+          rosdep install --from-paths ros2_ws/src --ignore-src -y
+      - name: Compilation et tests
+        shell: bash
+        run: |
+          source /opt/ros/jazzy/setup.bash
+          cd ros2_ws
+          colcon build --event-handlers console_direct+
+          colcon test --packages-select isep_mission isep_perception
+          colcon test-result --verbose

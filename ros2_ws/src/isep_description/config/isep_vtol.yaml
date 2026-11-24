@@ -1,0 +1,153 @@
+# =============================================================================
+# isep_vtol : description du drone principal pour la simulation Gazebo
+# =============================================================================
+# Ce fichier est la SOURCE UNIQUE du modèle. Ne modifiez pas model.sdf à la main :
+#   python3 scripts/generate_model.py
+# régénère models/isep_vtol/model.sdf ET ardupilot/params/generated/isep_vtol_servos.param.
+#
+# Toutes les positions sont en millimètres, dans le REPÈRE FUSION 360 de
+# drone_simulation.stl :
+#   - origine : pointe du nez, Y = 0
+#   - +Y : vers la queue
+#   - +X : vers l'aile GAUCHE (vue pilote)
+#   - +Z : vers le haut
+# Lisez-les directement dans Fusion (Inspecter > Mesurer) : le script convertit
+# vers le repère Gazebo (X avant, Y gauche, Z haut, origine au centre de gravité).
+#
+# Les valeurs marquées ESTIMATION sont à remplacer par des mesures
+# (Fusion > Inspecter > Propriétés, banc d'essai moteur).
+# =============================================================================
+
+model_name: isep_vtol
+
+mesh:
+  file: drone_simulation.stl      # dans models/isep_vtol/meshes/
+  scale: 0.001                    # STL exporté en mm
+  color: [0.85, 0.85, 0.88]
+
+mass:
+  total_kg: 4.3                   # masse au décollage retenue
+  # Centre de gravité visé. ESTIMATION : placé au quart de la corde moyenne
+  # (198 mm) calculée sur le STL, pour une marge statique positive.
+  # Avec le CG de l'ancienne CAO (285 mm), l'aile serait instable en tangage.
+  cg_mm: [0.0, 200.0, 100.0]
+  # Inerties de l'avion complet autour du CG, repère Gazebo (kg.m²). ESTIMATION.
+  inertia: {ixx: 0.25, iyy: 0.27, izz: 0.52}
+
+# -----------------------------------------------------------------------------
+# Propulsion : tilt-tri. Deux nacelles avant basculantes (lacet par basculement
+# différentiel), hélice au-dessus du pivot. Moteur arrière SUSPENDU sous son pivot,
+# hélice vers le bas en VTOL (poussée vers le haut) ; il bascule de 90° pour
+# pointer vers l'arrière en croisière (hélice propulsive).
+# Numéros de servo = sorties de la carte de vol (SERVOn).
+# -----------------------------------------------------------------------------
+propulsion:
+  motor: EMAX ECOII-3115 800KV
+  prop: 10x6 bipale
+  max_rad_s: 1360                 # ~13 000 tr/min en charge sur 6S. ESTIMATION
+  max_thrust_n: 26.0              # poussée max par moteur. ESTIMATION, à mesurer au banc
+  blade_cp_m: 0.089               # 0,7 x rayon d'une hélice 10"
+  rotor_offset_mm: 50             # pivot -> plan de l'hélice le long de l'axe de poussée (+ : au-dessus)
+  nacelle_mass_kg: 0.16           # moteur + support
+  rotor_mass_kg: 0.016            # hélice
+  tilt:
+    yaw_angle_deg: 10             # = Q_TILT_YAW_ANGLE ; débattement servo de -10° à +90°
+    servo_p_gain: 4.0
+    servo_d_gain: 0.05
+    servo_max_torque_nm: 3.0      # servo 30 kg.cm
+  rotors:
+    front_right:
+      pivot_mm: [-340.0, 40.0, 130.0]
+      spin: ccw                   # vu de dessus, nacelle verticale
+      motor_servo: 5              # SERVO5 = Motor1 (fonction 33)
+      motor_function: 33
+      tilt_servo: 10              # SERVO10 = TiltMotorRight (fonction 76)
+      tilt_function: 76
+    front_left:
+      pivot_mm: [340.0, 40.0, 130.0]
+      spin: cw
+      motor_servo: 6              # SERVO6 = Motor2 (fonction 34)
+      motor_function: 34
+      tilt_servo: 9               # SERVO9 = TiltMotorLeft (fonction 75)
+      tilt_function: 75
+    rear:
+      pivot_mm: [0.0, 960.0, 150.0]
+      rotor_offset_mm: -50        # moteur suspendu sous le pivot (vers le bas en VTOL)
+      spin: ccw
+      motor_servo: 8              # SERVO8 = Motor4 (fonction 36)
+      motor_function: 36
+      tilt_servo: 11              # SERVO11 = TiltMotorsRear (fonction 45)
+      tilt_function: 45
+
+# -----------------------------------------------------------------------------
+# Aérodynamique (plugin Gazebo LiftDrag). Surfaces mesurées sur le STL :
+# aile + fuselage 0,547 m², corde moyenne 395 mm, empennage en V ~0,063 m².
+# -----------------------------------------------------------------------------
+aero:
+  air_density: 1.2041
+  wing_center:                    # partie centrale (fuselage porteur + aile intérieure)
+    area_m2: 0.395
+    cp_mm: [0.0, 141.0, 100.0]
+    cla: 4.4                      # pente de portance 1/rad (allongement ~4,7)
+    a0: 0.05                      # incidence de portance nulle (rad)
+    alpha_stall: 0.26
+  ailerons:                       # panneaux extérieurs |X| > 450 mm, avec gouverne
+    area_m2: 0.076                # par côté
+    cp_mm: [620.0, 346.0, 60.0]   # côté gauche ; le droit est symétrique
+    hinge_mm: [620.0, 480.0, 60.0]
+    max_deflection_deg: 25
+    rad_to_cl: -2.0
+    left_servo: 1                 # SERVO1 = Aileron (fonction 4)
+    right_servo: 2                # SERVO2 = Aileron (fonction 4)
+  vtail:                          # empennage en V, deux panneaux à ~45°
+    area_m2: 0.0316               # par panneau
+    cp_mm: [130.0, 720.0, 220.0]  # côté gauche
+    hinge_mm: [130.0, 790.0, 220.0]
+    dihedral_deg: 45
+    cla: 4.0
+    max_deflection_deg: 25
+    rad_to_cl: -2.0
+    left_servo: 3                 # SERVO3 = VTailLeft (fonction 79)
+    right_servo: 4                # SERVO4 = VTailRight (fonction 80)
+
+# Train d'atterrissage FICTIF (sphères invisibles) tant que le vrai n'est pas dessiné.
+landing_points_mm:
+  - [100.0, 120.0, -40.0]
+  - [-100.0, 120.0, -40.0]
+  - [100.0, 330.0, -40.0]
+  - [-100.0, 330.0, -40.0]
+
+collision_boxes_mm:               # [centre X, Y, Z], [taille X, Y, Z] dans le repère Fusion
+  fuselage: [[0.0, 310.0, 95.0], [140.0, 620.0, 190.0]]
+  wing: [[0.0, 380.0, 60.0], [1600.0, 250.0, 30.0]]
+
+# -----------------------------------------------------------------------------
+# Capteurs simulés (publiés en topics Gazebo, pontés vers ROS 2 par ros_gz_bridge)
+# -----------------------------------------------------------------------------
+sensors:
+  camera:
+    enabled: true
+    pos_mm: [0.0, 60.0, 20.0]
+    pitch_down_deg: 30
+    width: 640
+    height: 480
+    hfov_deg: 66
+    rate_hz: 15
+    topic: isep_vtol/camera/image
+  lidar_2d:
+    enabled: true
+    pos_mm: [0.0, 100.0, 195.0]
+    samples: 360
+    range_max_m: 12.0
+    rate_hz: 10
+    topic: isep_vtol/lidar/scan
+  rangefinder_down:               # remplace le radar altimétrique en simulation
+    enabled: true
+    pos_mm: [0.0, 250.0, 0.0]
+    range_min_m: 0.3
+    range_max_m: 20.0
+    rate_hz: 20
+    topic: isep_vtol/rangefinder
+
+ardupilot:
+  fdm_port_in: 9002

@@ -1,0 +1,47 @@
+# =============================================================================
+# isep_vtol en simulation Gazebo (modèle JSON) : cellule tilt-tri à lacet vectoriel.
+# À charger APRÈS default_params/quadplane.parm, puis common.param, puis
+# generated/isep_vtol_servos.param (sorties servo, généré par generate_model.py).
+# Gains de départ repris du modèle SITL quadplane-tilttrivec d'ArduPilot :
+# à régler (QAUTOTUNE puis AUTOTUNE) une fois le modèle validé.
+# =============================================================================
+
+Q_ENABLE         1
+Q_FRAME_CLASS    7       # Tri
+Q_TILT_ENABLE    1
+Q_TILT_TYPE      2       # lacet par basculement différentiel des nacelles avant
+Q_TILT_MAX       45      # basculement max autorisé en modes VTOL
+Q_TILT_RATE_UP   40
+Q_TILT_RATE_DN   40
+# Q_TILT_MASK et Q_TILT_YAW_ANGLE : dans generated/isep_vtol_servos.param
+
+# Sorties non utilisées par le tri
+SERVO7_FUNCTION  0
+
+# --- Gains VTOL (départ) ---
+Q_A_RAT_RLL_P    0.126
+Q_A_RAT_RLL_I    0.126
+Q_A_RAT_RLL_D    0.003
+Q_A_RAT_PIT_P    0.12
+Q_A_RAT_PIT_I    0.12
+Q_A_RAT_PIT_D    0.0025
+Q_A_RAT_YAW_P    0.5
+Q_A_RAT_YAW_I    0.05
+Q_A_RAT_YAW_D    0.01
+
+# --- Gains avion (départ) ---
+RLL2SRV_TCONST   0.2
+RLL_RATE_P       0.74
+RLL_RATE_I       0.218
+RLL_RATE_D       0.012
+RLL_RATE_FF      0.218
+PTCH2SRV_TCONST  0.3
+PTCH_RATE_P      0.574
+PTCH_RATE_I      0.933
+PTCH_RATE_D      0.016
+PTCH_RATE_FF     0.933
+KFF_RDDRMIX      0.5
+
+# --- Batterie simulée (paramètres SIM_ : ignorés sur le vrai drone) ---
+SIM_BATT_VOLTAGE 25.2
+SIM_BATT_CAP_AH  10

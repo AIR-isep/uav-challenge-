@@ -1,0 +1,11 @@
+# Fichiers lourds stockés avec Git LFS : installer git-lfs puis « git lfs install »
+*.f3d  filter=lfs diff=lfs merge=lfs -text
+*.stl  filter=lfs diff=lfs merge=lfs -text
+*.STL  filter=lfs diff=lfs merge=lfs -text
+*.dae  filter=lfs diff=lfs merge=lfs -text
+*.step filter=lfs diff=lfs merge=lfs -text
+*.bag  filter=lfs diff=lfs merge=lfs -text
+*.mcap filter=lfs diff=lfs merge=lfs -text
+# Fichiers générés : pas de conflit manuel, on régénère
+ros2_ws/src/isep_description/models/isep_vtol/model.sdf linguist-generated=true
+ardupilot/params/generated/* linguist-generated=true

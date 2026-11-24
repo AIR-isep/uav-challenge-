@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>isep_description</name>
+  <version>0.1.0</version>
+  <description>Modèle Gazebo du drone isep_vtol (tilt-tri) et mondes de simulation.</description>
+  <maintainer email="equipe-air@isep.fr">Équipe AIR ISEP</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <exec_depend>python3-yaml</exec_depend>
+
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

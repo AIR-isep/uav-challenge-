@@ -1,0 +1,44 @@
+# =============================================================================
+# Paramètres communs : sécurité et mission. Chargés en simulation ET en vol.
+# Valeurs vérifiées dans le code source d'ArduPlane 4.7.
+# =============================================================================
+
+# --- Vitesses (aile 0,55 m², 4,3 kg : décrochage estimé ~11 m/s) ---
+ARSPD_USE        1
+AIRSPEED_MIN     14
+AIRSPEED_CRUISE  17
+AIRSPEED_MAX     25
+
+# --- Transitions VTOL <-> avion ---
+Q_ASSIST_SPEED   11      # assistance des moteurs VTOL sous 11 m/s
+Q_TRANSITION_MS  3000
+Q_TRANS_FAIL     15      # transition non terminée en 15 s = échec
+Q_TRANS_FAIL_ACT 1       # échec de transition -> QRTL
+Q_RTL_MODE       1       # RTL termine en atterrissage vertical
+Q_RTL_ALT        25
+RTL_ALTITUDE     40
+
+# --- Failsafes (scénario 02 : perte radio) ---
+THR_FAILSAFE     1
+FS_SHORT_ACTN    0
+FS_LONG_ACTN     1       # perte radio longue -> RTL
+FS_LONG_TIMEOUT  5
+FS_GCS_ENABL     0
+
+# --- Géofence (scénario 03) : cylindre 300 m x 120 m, actif au décollage ---
+FENCE_ENABLE     0
+FENCE_AUTOENABLE 3       # actif dès l'armement (valeurs 1 et 2 obsolètes en 4.7)
+FENCE_TYPE       3
+FENCE_ACTION     1       # sortie de zone -> RTL
+FENCE_RADIUS     300
+FENCE_ALT_MAX    120
+
+# --- Batterie 6S2P Li-ion 10 Ah (scénario 04) ---
+BATT_CAPACITY    10000
+BATT_LOW_VOLT    21.0
+BATT_LOW_MAH     2000    # 20 % restant
+BATT_FS_LOW_ACT  6       # LOITER_TO_QLAND
+BATT_CRT_VOLT    19.8
+BATT_FS_CRT_ACT  4       # QLAND immédiat
+Q_M_BAT_VOLT_MAX 25.2
+Q_M_BAT_VOLT_MIN 19.8

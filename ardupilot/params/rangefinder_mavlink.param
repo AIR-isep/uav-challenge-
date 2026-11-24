@@ -1,0 +1,8 @@
+# Télémètre vertical reçu en MAVLink (DISTANCE_SENSOR) depuis l'ordinateur de bord.
+# Simulation : rangefinder_bridge (isep_perception). Vol : pilote du radar sur le Pi.
+# NE PAS charger sans ROS : ArduPilot refuserait l'armement faute de mesures.
+RNGFND1_TYPE     10
+RNGFND1_ORIENT   25      # vers le bas
+RNGFND1_MIN      0.3
+RNGFND1_MAX      20
+RNGFND_LANDING   1       # utilisé pour l'arrondi à l'atterrissage
