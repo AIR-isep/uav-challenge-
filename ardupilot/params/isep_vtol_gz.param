@@ -21,9 +21,9 @@ Q_TILT_RATE_DN   40
 Q_A_RAT_RLL_P    0.75
 Q_A_RAT_RLL_I    0.75
 Q_A_RAT_RLL_D    0.0147
-Q_A_RAT_PIT_P    0.5
-Q_A_RAT_PIT_I    0.5
-Q_A_RAT_PIT_D    0.01
+Q_A_RAT_PIT_P    1.245
+Q_A_RAT_PIT_I    1.245
+Q_A_RAT_PIT_D    0.0121
 Q_A_RAT_YAW_P    0.5
 Q_A_RAT_YAW_I    0.05
 Q_A_RAT_YAW_D    0.01
@@ -46,3 +46,4 @@ SIM_BATT_VOLTAGE 25.2
 SIM_BATT_CAP_AH  10
 Q_M_THST_HOVER   0.70    # puissance de stationnaire mesurée en simulation (Thr 72 %)
 Q_A_ANG_RLL_P    6.938
+Q_A_ANG_PIT_P    6.938
