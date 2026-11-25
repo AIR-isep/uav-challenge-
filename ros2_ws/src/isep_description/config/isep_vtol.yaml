@@ -49,7 +49,7 @@ propulsion:
   # loin du CG que les avant ; ici il est ~4,7 fois plus loin, d'où le basculement
   # vers l'avant au décollage avec Q_FRAME_CLASS 7.
   max_rad_s: 1360                 # ~13 000 tr/min en charge sur 6S. ESTIMATION
-  max_thrust_n: 26.0              # poussée max par moteur. ESTIMATION, à mesurer au banc
+  max_thrust_n: 35.0             # ESSAI : hélices 12" (à confirmer au banc)
   blade_cp_m: 0.089               # 0,7 x rayon d'une hélice 10"
   rotor_offset_mm: 50             # pivot -> plan de l'hélice le long de l'axe de poussée (+ : au-dessus)
   nacelle_mass_kg: 0.16           # moteur + support
